@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ZhukovCurrencyExchange:war6">
+    <output-path>$PROJECT_DIR$/out/artifacts/ZhukovCurrencyExchange_war6</output-path>
+    <root id="archive" name="ZhukovCurrencyExchange_war.war">
+      <element id="artifact" artifact-name="ZhukovCurrencyExchange:war exploded" />
+    </root>
+  </artifact>
+</component>
