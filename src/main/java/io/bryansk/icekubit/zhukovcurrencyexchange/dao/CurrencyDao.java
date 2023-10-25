@@ -1,8 +1,10 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.dao;
 
 
+import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.CurrencyAlreadyExistException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.model.Currency;
 import io.bryansk.icekubit.zhukovcurrencyexchange.services.CurrenciesService;
+import org.sqlite.SQLiteException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -112,7 +114,10 @@ public class CurrencyDao {
             preparedStatement.setString(2, currency.getName());
             preparedStatement.setString(3, currency.getSign());
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (SQLiteException e) {
+            throw new CurrencyAlreadyExistException();
+        }
+        catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }

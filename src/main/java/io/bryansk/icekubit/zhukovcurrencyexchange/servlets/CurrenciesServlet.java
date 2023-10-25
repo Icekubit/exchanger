@@ -1,6 +1,7 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.CurrencyAlreadyExistException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.CurrencyNotFoundException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.model.Currency;
 import io.bryansk.icekubit.zhukovcurrencyexchange.services.CurrenciesService;
@@ -54,11 +55,11 @@ public class CurrenciesServlet extends BaseServlet {
 
         if (name == null || code == null || sign == null)
             sendError(resp, 400, "Отсутствует нужное поле формы");
-        else if (currenciesService.isCurrencyExist(code)) {
-            sendError(resp, 409, "Валюта с таким кодом уже существует");
-        } else {
+        else try {
             String json = currenciesService.save(new Currency(code, name, sign));
             sendSuccess(resp, json);
+        } catch (CurrencyAlreadyExistException e) {
+            sendError(resp, 409, "Валюта с таким кодом уже существует");
         }
 
     }

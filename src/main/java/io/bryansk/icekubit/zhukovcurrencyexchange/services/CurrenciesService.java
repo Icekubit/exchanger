@@ -58,11 +58,6 @@ public class CurrenciesService {
     public String save(Currency currency) {
         currencyDao.save(currency);
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 
         // вытаскиваем из бд только, что сохранённую валюту, потому как нам нужно знать её айдишник
         // чтобы швырнуться нормальным джейсоном в ответ
