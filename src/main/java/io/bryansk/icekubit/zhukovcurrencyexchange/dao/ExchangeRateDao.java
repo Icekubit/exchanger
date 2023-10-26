@@ -72,12 +72,21 @@ public class ExchangeRateDao {
 
         try (Connection connection = DriverManager.getConnection(URL)){
 //            String SQL = "SELECT * FROM ExchangeRates WHERE BaseCurrencyId = ? AND TargetCurrencyId = ?";
+//            String SQL = """
+//                SELECT * FROM ExchangeRates WHERE
+//                    BaseCurrencyId = (SELECT ID FROM Currencies WHERE Code = ?)
+//                        AND
+//                    TargetCurrencyId = (SELECT ID FROM Currencies WHERE Code = ?)
+//            """;
             String SQL = """
-                SELECT * FROM ExchangeRates WHERE 
-                    BaseCurrencyId = (SELECT ID FROM Currencies WHERE Code = ?) 
-                        AND 
-                    TargetCurrencyId = (SELECT ID FROM Currencies WHERE Code = ?)
-            """;
+                    SELECT ExchangeRates.ID ID, BaseCurrencyId, TargetCurrencyId, Rate 
+                    FROM ExchangeRates
+                    JOIN Currencies baseCurrency ON ExchangeRates.BaseCurrencyId = baseCurrency.ID
+                    JOIN Currencies targetCurrency ON ExchangeRates.TargetCurrencyId = targetCurrency.ID
+                    WHERE baseCurrency.Code = ?
+                    AND
+                        targetCurrency.Code = ?
+                    """;
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
             preparedStatement.setString(1, baseCurrencyCode);
             preparedStatement.setString(2, targetCurrencyCode);
@@ -97,37 +106,6 @@ public class ExchangeRateDao {
         }
         return exchangeRate;
     }
-
-//    public boolean isExchangeRateExist(String baseCurrencyCode, String targetCurrencyCode) {
-//        int baseCurrencyId = currencyDao.getCurrencyByCode(baseCurrencyCode).getId();
-//        int targetCurrencyId = currencyDao.getCurrencyByCode(targetCurrencyCode).getId();
-//        try (Connection connection = DriverManager.getConnection(URL)){
-//            String SQL = "SELECT * FROM ExchangeRates WHERE BaseCurrencyId = ? AND TargetCurrencyId = ?";
-//            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
-//            preparedStatement.setInt(1, baseCurrencyId);
-//            preparedStatement.setInt(2, targetCurrencyId);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//
-//            resultSet.next();
-//            if (resultSet.getInt("id") != 0)
-//                return true;
-//
-//// Проверим теперь есть ли обратная валютная пара (base и target меняем местами)
-//
-//            PreparedStatement preparedStatement2 = connection.prepareStatement(SQL);
-//            preparedStatement2.setInt(1, targetCurrencyId);
-//            preparedStatement2.setInt(2, baseCurrencyId);
-//            ResultSet resultSet2 = preparedStatement2.executeQuery();
-//            resultSet2.next();
-//            if (resultSet2.getInt("id") != 0)
-//                return true;
-//
-//
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return false;
-//    }
 
     public void save(ExchangeRate exchangeRate) {
         try (Connection connection = DriverManager.getConnection(URL)){
