@@ -15,11 +15,13 @@ public class ExchangeRateServlet extends BaseServlet {
     ExchangeRatesService exchangeRatesService = ExchangeRatesService.getExchangeRatesService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String URI = req.getRequestURI();
-        if (URI.equals("/helloworld/exchangeRate/") || URI.equals("/helloworld/exchangeRate")) {
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
             sendError(resp,400, "Коды валют отсутствуют в адресе");
         } else {
-            String currencyPairCodes = URI.substring(25);
+            String currencyPairCodes = pathInfo.substring(1);
+            if (currencyPairCodes.length() != 6)
+                sendError(resp, 404, "Некорректные коды валют");
             String baseCurrencyCode = currencyPairCodes.substring(0,3);
             String targetCurrencyCode = currencyPairCodes.substring(3);
             try {
