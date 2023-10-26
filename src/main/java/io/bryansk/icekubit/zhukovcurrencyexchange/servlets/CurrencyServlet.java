@@ -14,27 +14,13 @@ public class CurrencyServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String URI = req.getRequestURI();
-//        Currency currency = null;
-
-//        if (URI.equals("/currency/") || URI.equals("/currency")) {
-//            sendError(resp,400, "Код валюты отсутствует в адресе");
-//        } else {
-//            String code = URI.substring(10);
-//            currency = currenciesService.getCurrencyByCode(code);
-//            if (currency == null) {
-//                sendError(resp,404, "Валюта не найдена");
-//            } else {
-//                ObjectMapper objectMapper = new ObjectMapper();
-//                String json = objectMapper.writeValueAsString(currency);
-//                resp.getWriter().write(json);
-//            }
-//        }
-        if (URI.equals("/helloworld/currency/") || URI.equals("/helloworld/currency")) {
+        String pathInfo = req.getPathInfo();
+        System.out.println(pathInfo);
+        if (pathInfo.equals("/") || pathInfo == null) {
             sendError(resp,400, "Код валюты отсутствует в адресе");
         } else {
             try {
-                String code = URI.substring(21);
+                String code = pathInfo.substring(1);
                 String json = currenciesService.getCurrencyByCode(code);
                 sendSuccess(resp, json);
             } catch (CurrencyNotFoundException e) {

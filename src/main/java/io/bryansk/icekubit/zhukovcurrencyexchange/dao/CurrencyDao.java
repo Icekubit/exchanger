@@ -126,6 +126,6 @@ public class CurrencyDao {
 
     public static void main(String[] args) {
         CurrencyDao currencyDao1 = CurrencyDao.getCurrencyDao();
-        currencyDao1.save(new Currency("RUB", "", ""));
+        System.out.println(currencyDao1.getAllCurrencies());
     }
 }

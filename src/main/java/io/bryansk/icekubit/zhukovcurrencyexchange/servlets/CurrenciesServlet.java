@@ -20,31 +20,8 @@ public class CurrenciesServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//        String URI = req.getRequestURI();
-//        Currency currency = null;
-
-
-
-//        if (URI.startsWith("/currencies/")) {
-//            String code = URI.substring(12);
-//            if (code.equals("")) {
-//                resp.sendError(400, "Код валюты отсутствует в адресе");
-//            } else {
-//                currency = currenciesService.getCurrencyByCode(code);
-//                if (currency.getCode() == null) {
-//                    resp.sendError(404, "Валюта не найдена");
-//                }
-//            }
-//            ObjectMapper objectMapper = new ObjectMapper();
-//
-//            String json = objectMapper.writeValueAsString(currency);
-//
-//
-//            resp.getWriter().write(json);
-//        } else {
         String json = currenciesService.getAllCurrencies();
         sendSuccess(resp, json);
-//        }
     }
 
     @Override
