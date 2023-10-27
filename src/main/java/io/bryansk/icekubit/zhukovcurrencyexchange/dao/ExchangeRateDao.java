@@ -1,5 +1,6 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.dao;
 
+import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.CurrencyNotFoundException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.ExchangeRateAlreadyExistException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.model.ExchangeRate;
 import org.sqlite.SQLiteException;
@@ -140,12 +141,21 @@ public class ExchangeRateDao {
             preparedStatement.setBigDecimal(3, rate.setScale(6, RoundingMode.FLOOR));
             preparedStatement.executeUpdate();
         } catch (SQLiteException e1) {
-            throw new ExchangeRateAlreadyExistException(e1);
+            String message = e1.getMessage();
+            if (message.contains("[SQLITE_CONSTRAINT_UNIQUE]"))
+                throw new ExchangeRateAlreadyExistException(e1);
+            if (message.contains("[SQLITE_CONSTRAINT_NOTNULL]"))
+                throw new CurrencyNotFoundException();
         }
         catch (SQLException e2) {
             throw new RuntimeException(e2);
         }
         return this.getExchangeRate(baseCurrencyCode, targetCurrencyCode);
+    }
+
+    public static void main(String[] args) {
+        ExchangeRateDao exchangeRateDao1 = ExchangeRateDao.getExchangeRateDao();
+        exchangeRateDao1.save("URL", "RUB", BigDecimal.valueOf(1));
     }
 
     public void update(ExchangeRate exchangeRate) {
