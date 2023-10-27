@@ -1,6 +1,8 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.dao;
 
+import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.ExchangeRateAlreadyExistException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.model.ExchangeRate;
+import org.sqlite.SQLiteException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -114,8 +116,11 @@ public class ExchangeRateDao {
             preparedStatement.setInt(2, exchangeRate.getTargetCurrencyId());
             preparedStatement.setBigDecimal(3, exchangeRate.getRate().setScale(6, RoundingMode.FLOOR));
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (SQLiteException e1) {
+            throw new ExchangeRateAlreadyExistException(e1);
+        }
+        catch (SQLException e2) {
+            throw new RuntimeException(e2);
         }
     }
 

@@ -115,7 +115,7 @@ public class CurrencyDao {
             preparedStatement.setString(3, currency.getSign());
             preparedStatement.executeUpdate();
         } catch (SQLiteException e) {
-            throw new CurrencyAlreadyExistException();
+            throw new CurrencyAlreadyExistException(e);
         }
         catch (SQLException e) {
             e.printStackTrace();

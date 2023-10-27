@@ -1,5 +1,6 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.servlets;
 
+import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.ExchangeRateAlreadyExistException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.services.ExchangeRatesService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -39,9 +40,15 @@ public class ExchangeRatesServlet extends BaseServlet {
 //        else if (exchangeRatesService.isExchangeRateExist(baseCurrencyCode, targetCurrencyCode))
 //            sendError(resp,409, "Валютная пара с таким кодом уже существует");
         else {
-            BigDecimal rate = BigDecimal.valueOf(Double.parseDouble(rateString));
-            String json = exchangeRatesService.save(baseCurrencyCode, targetCurrencyCode, rate);
-            sendSuccess(resp, json);
+            try {
+                BigDecimal rate = BigDecimal.valueOf(Double.parseDouble(rateString));
+                String json = exchangeRatesService.save(baseCurrencyCode, targetCurrencyCode, rate);
+                sendSuccess(resp, json);
+            } catch (NumberFormatException e1) {
+                sendError(resp, 422, "Неправильный формат курса валют");
+            } catch (ExchangeRateAlreadyExistException e2) {
+                sendError(resp, 409, "Валютная пара с таким кодом уже существует");
+            }
         }
     }
 }
