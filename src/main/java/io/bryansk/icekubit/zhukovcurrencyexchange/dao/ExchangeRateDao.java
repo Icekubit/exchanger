@@ -124,6 +124,30 @@ public class ExchangeRateDao {
         }
     }
 
+    public ExchangeRate save(String baseCurrencyCode, String targetCurrencyCode, BigDecimal rate) {
+        try (Connection connection = DriverManager.getConnection(URL)){
+//            String SQL = "INSERT INTO ExchangeRates(BaseCurrencyId, TargetCurrencyId, Rate) VALUES(?, ?, ?)";
+            String SQL = """
+                            INSERT INTO ExchangeRates (BaseCurrencyId, TargetCurrencyId, Rate)
+                            SELECT
+                            (SELECT ID FROM Currencies WHERE Code = ?),
+                            (SELECT ID FROM Currencies WHERE Code = ?),
+                            ?
+                            """;
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setString(1, baseCurrencyCode);
+            preparedStatement.setString(2, targetCurrencyCode);
+            preparedStatement.setBigDecimal(3, rate.setScale(6, RoundingMode.FLOOR));
+            preparedStatement.executeUpdate();
+        } catch (SQLiteException e1) {
+            throw new ExchangeRateAlreadyExistException(e1);
+        }
+        catch (SQLException e2) {
+            throw new RuntimeException(e2);
+        }
+        return this.getExchangeRate(baseCurrencyCode, targetCurrencyCode);
+    }
+
     public void update(ExchangeRate exchangeRate) {
         try (Connection connection = DriverManager.getConnection(URL)){
             String SQL = "UPDATE ExchangeRates SET Rate = ? WHERE BaseCurrencyId = ? AND TargetCurrencyId = ?";
