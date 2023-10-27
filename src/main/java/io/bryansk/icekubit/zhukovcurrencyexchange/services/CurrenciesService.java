@@ -8,6 +8,7 @@ import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.CurrencyNotFoundExc
 import io.bryansk.icekubit.zhukovcurrencyexchange.model.Currency;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CurrenciesService {
 
@@ -41,18 +42,8 @@ public class CurrenciesService {
         return json;
     }
 
-    public String getCurrencyByCode(String code) {
-        Currency currency = currencyDao.getCurrencyByCode(code);
-        if (currency == null)
-            throw new CurrencyNotFoundException();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = "";
-        try {
-            json = objectMapper.writeValueAsString(currency);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        return json;
+    public Optional<Currency> getCurrencyByCode(String code) {
+        return currencyDao.getCurrencyByCode(code);
     }
 
     public String save(Currency currency) {
@@ -61,7 +52,7 @@ public class CurrenciesService {
 
         // вытаскиваем из бд только, что сохранённую валюту, потому как нам нужно знать её айдишник
         // чтобы швырнуться нормальным джейсоном в ответ
-        Currency addedCurrency = currencyDao.getCurrencyByCode(currency.getCode());
+        Currency addedCurrency = currencyDao.getCurrencyByCode(currency.getCode()).get();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = "";

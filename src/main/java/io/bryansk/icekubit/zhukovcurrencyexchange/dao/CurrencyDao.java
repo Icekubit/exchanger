@@ -10,6 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 public class CurrencyDao {
 
@@ -77,7 +78,7 @@ public class CurrencyDao {
         return currency;
     }
 
-    public Currency getCurrencyByCode(String code) {
+    public Optional<Currency> getCurrencyByCode(String code) {
         Currency currency = null;
         try (Connection connection = DriverManager.getConnection(URL)){
             String SQL = "SELECT * FROM Currencies WHERE Code = ?";
@@ -85,24 +86,24 @@ public class CurrencyDao {
             preparedStatement.setString(1, code);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            resultSet.next();
+            if (resultSet.next()) {
 
-            // проверяем нашёл ли селект что-нибудь
-
-            if (resultSet.getInt("ID") != 0) {
-
-                // если нашёл, то создаём нью карренси, если не нашёл то швыряем налл
+                // если селект нашёл что-нибудь, то оборачиваем это в Optional и возвращаем
 
                 currency = new Currency();
                 currency.setId(resultSet.getInt("ID"));
                 currency.setCode(resultSet.getString("Code"));
                 currency.setName(resultSet.getString("FullName"));
                 currency.setSign(resultSet.getString("Sign"));
+                return Optional.of(currency);
+            } else {
+
+                // иначе возвращаем пустой Optional
+                return Optional.empty();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return currency;
     }
 
     public void save(Currency currency) {

@@ -59,19 +59,13 @@ public class ExchangeRatesService {
 //        return exchangeRateDao.isExchangeRateExist(baseCurrencyCode, targetCurrencyCode);
 //    }
 
+    // NPE БУДЕШЬ ХВАТАТЬ ПЕРЕДЕЛАТЬ
     public String save(String baseCurrencyCode, String targetCurrencyCode, BigDecimal rate) {
         ExchangeRate exchangeRate = new ExchangeRate();
-        exchangeRate.setBaseCurrencyId(currencyDao.getCurrencyByCode(baseCurrencyCode).getId());
-        exchangeRate.setTargetCurrencyId(currencyDao.getCurrencyByCode(targetCurrencyCode).getId());
+        exchangeRate.setBaseCurrencyId(currencyDao.getCurrencyByCode(baseCurrencyCode).get().getId());
+        exchangeRate.setTargetCurrencyId(currencyDao.getCurrencyByCode(targetCurrencyCode).get().getId());
         exchangeRate.setRate(rate);
         exchangeRateDao.save(exchangeRate);
-
-//        ExchangeRateDto exchangeRateDto = new ExchangeRateDto();
-//        exchangeRateDto.setId(exchangeRate.getId());
-//        exchangeRateDto.setBaseCurrency(currencyDao.getCurrencyById(exchangeRate.getBaseCurrencyId()));
-//        exchangeRateDto.setTargetCurrency(currencyDao.getCurrencyById(exchangeRate.getTargetCurrencyId()));
-//        exchangeRateDto.setRate(exchangeRate.getRate());
-
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = "";
