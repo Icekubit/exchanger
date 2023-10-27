@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public class ExchangeServlet extends BaseServlet {
     private ExchangeRatesService exchangeRatesService = ExchangeRatesService.getExchangeRatesService();
@@ -24,7 +25,7 @@ public class ExchangeServlet extends BaseServlet {
         String amountStr = req.getParameter("amount");
 
 
-        double amount = 0.0;
+        BigDecimal amount = new BigDecimal(0.0);
 
 
 
@@ -32,7 +33,8 @@ public class ExchangeServlet extends BaseServlet {
             sendError(resp, 400, "Отсутствует параметр запроса");
         } else {
             try {
-                amount = Double.parseDouble(amountStr);
+                amount = BigDecimal.valueOf(Double.parseDouble(amountStr));
+                System.out.println(amount);
                 String json = exchangeRatesService.exchange(baseCurrencyCode, targetCurrencyCode, amount);
                 sendSuccess(resp, json);
             } catch (NumberFormatException e) {

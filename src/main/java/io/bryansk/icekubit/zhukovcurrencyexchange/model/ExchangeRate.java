@@ -1,14 +1,15 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.model;
 
+import java.math.BigDecimal;
+
 public class ExchangeRate {
     private int id;
     private int baseCurrencyId;
     private int targetCurrencyId;
-    private double rate;
+    private BigDecimal rate;
 
     public ExchangeRate() {
     }
-
 
     public int getId() {
         return id;
@@ -34,11 +35,11 @@ public class ExchangeRate {
         this.targetCurrencyId = targetCurrencyId;
     }
 
-    public double getRate() {
+    public BigDecimal getRate() {
         return rate;
     }
 
-    public void setRate(double rate) {
+    public void setRate(BigDecimal rate) {
         this.rate = rate;
     }
 
@@ -47,7 +48,7 @@ public class ExchangeRate {
         return "ExchangeRate{" +
                 "id=" + id +
                 ", baseCurrencyId=" + baseCurrencyId +
-                ", targerCurrencyId=" + targetCurrencyId +
+                ", targetCurrencyId=" + targetCurrencyId +
                 ", rate=" + rate +
                 '}';
     }
