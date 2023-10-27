@@ -2,21 +2,20 @@ package io.bryansk.icekubit.zhukovcurrencyexchange.dao;
 
 import io.bryansk.icekubit.zhukovcurrencyexchange.model.ExchangeRate;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExchangeRateDao {
 
-//    private static final String URL = "jdbc:sqlite:C:\\Users\\User\\IdeaProjects\\ZhukovCurrencyExchange\\mydb.db";
     private static final String URL = "jdbc:sqlite::resource:mydb.db";
 
     private static ExchangeRateDao exchangeRateDao;
-//    private CurrencyDao currencyDao;
 
 
     private ExchangeRateDao(){
-//        currencyDao = CurrencyDao.getCurrencyDao();
     }
 
     public static ExchangeRateDao getExchangeRateDao() {
@@ -48,7 +47,7 @@ public class ExchangeRateDao {
                 exchangeRate.setId(resultSet.getInt("ID"));
                 exchangeRate.setBaseCurrencyId(resultSet.getInt("BaseCurrencyId"));
                 exchangeRate.setTargetCurrencyId(resultSet.getInt("TargetCurrencyId"));
-                exchangeRate.setRate(resultSet.getDouble("Rate"));
+                exchangeRate.setRate(resultSet.getBigDecimal("Rate").setScale(6, RoundingMode.FLOOR));
                 allExchangeRates.add(exchangeRate);
             }
         } catch (SQLException e) {
@@ -98,7 +97,7 @@ public class ExchangeRateDao {
                 exchangeRate.setId(resultSet.getInt("ID"));
                 exchangeRate.setBaseCurrencyId(resultSet.getInt("BaseCurrencyId"));
                 exchangeRate.setTargetCurrencyId(resultSet.getInt("TargetCurrencyId"));
-                exchangeRate.setRate(resultSet.getDouble("Rate"));
+                exchangeRate.setRate(resultSet.getBigDecimal("Rate").setScale(6, RoundingMode.FLOOR));
                 return exchangeRate;
             }
         } catch (SQLException e) {
@@ -113,7 +112,7 @@ public class ExchangeRateDao {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
             preparedStatement.setInt(1, exchangeRate.getBaseCurrencyId());
             preparedStatement.setInt(2, exchangeRate.getTargetCurrencyId());
-            preparedStatement.setDouble(3, exchangeRate.getRate());
+            preparedStatement.setBigDecimal(3, exchangeRate.getRate().setScale(6, RoundingMode.FLOOR));
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -124,7 +123,7 @@ public class ExchangeRateDao {
         try (Connection connection = DriverManager.getConnection(URL)){
             String SQL = "UPDATE ExchangeRates SET Rate = ? WHERE BaseCurrencyId = ? AND TargetCurrencyId = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
-            preparedStatement.setDouble(1, exchangeRate.getRate());
+            preparedStatement.setBigDecimal(1, exchangeRate.getRate().setScale(6, RoundingMode.FLOOR));
             preparedStatement.setInt(2, exchangeRate.getBaseCurrencyId());
             preparedStatement.setInt(3, exchangeRate.getTargetCurrencyId());
             preparedStatement.executeUpdate();
@@ -133,7 +132,7 @@ public class ExchangeRateDao {
         }
     }
 
-    public void update(String baseCurrencyCode, String targetCurrencyCode, double rate) {
+    public void update(String baseCurrencyCode, String targetCurrencyCode, BigDecimal rate) {
         try (Connection connection = DriverManager.getConnection(URL)) {
             String SQL = """
                 UPDATE ExchangeRates
@@ -144,7 +143,7 @@ public class ExchangeRateDao {
                     TargetCurrencyId = (SELECT ID FROM Currencies WHERE Code = ?)
             """;
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
-            preparedStatement.setDouble(1, rate);
+            preparedStatement.setBigDecimal(1, rate.setScale(6, RoundingMode.FLOOR));
             preparedStatement.setString(2, baseCurrencyCode);
             preparedStatement.setString(3, targetCurrencyCode);
             preparedStatement.executeUpdate();

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 
 public class ExchangeRatesServlet extends BaseServlet {
@@ -15,8 +16,6 @@ public class ExchangeRatesServlet extends BaseServlet {
     ExchangeRatesService exchangeRatesService = ExchangeRatesService.getExchangeRatesService();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        ExchangeRatesService exchangeRatesService = ExchangeRatesService.getExchangeRatesService();
-
         resp.setContentType("application/json");
         String json = exchangeRatesService.getAllExchangeRates();
 
@@ -40,7 +39,7 @@ public class ExchangeRatesServlet extends BaseServlet {
 //        else if (exchangeRatesService.isExchangeRateExist(baseCurrencyCode, targetCurrencyCode))
 //            sendError(resp,409, "Валютная пара с таким кодом уже существует");
         else {
-            double rate = Double.parseDouble(rateString);
+            BigDecimal rate = BigDecimal.valueOf(Double.parseDouble(rateString));
             String json = exchangeRatesService.save(baseCurrencyCode, targetCurrencyCode, rate);
             sendSuccess(resp, json);
         }

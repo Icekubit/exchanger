@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public class ExchangeRateServlet extends BaseServlet {
 
@@ -84,7 +85,7 @@ public class ExchangeRateServlet extends BaseServlet {
 //        }
         else {
             try {
-                double rate = Double.parseDouble(rateString);
+                BigDecimal rate = BigDecimal.valueOf(Double.parseDouble(rateString));
                 String json = exchangeRatesService.update(baseCurrencyCode, targetCurrencyCode, rate);
                 sendSuccess(resp, json);
             } catch (NumberFormatException e) {

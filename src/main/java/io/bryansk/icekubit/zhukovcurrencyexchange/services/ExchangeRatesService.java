@@ -10,6 +10,8 @@ import io.bryansk.icekubit.zhukovcurrencyexchange.dto.ExchangeResponseDto;
 import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.ExchangeRateNotFoundException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.model.ExchangeRate;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +59,7 @@ public class ExchangeRatesService {
 //        return exchangeRateDao.isExchangeRateExist(baseCurrencyCode, targetCurrencyCode);
 //    }
 
-    public String save(String baseCurrencyCode, String targetCurrencyCode, double rate) {
+    public String save(String baseCurrencyCode, String targetCurrencyCode, BigDecimal rate) {
         ExchangeRate exchangeRate = new ExchangeRate();
         exchangeRate.setBaseCurrencyId(currencyDao.getCurrencyByCode(baseCurrencyCode).getId());
         exchangeRate.setTargetCurrencyId(currencyDao.getCurrencyByCode(targetCurrencyCode).getId());
@@ -102,14 +104,14 @@ public class ExchangeRatesService {
         return json;
     }
 
-    public String update(String baseCurrencyCode, String targetCurrencyCode, double rate) {
+    public String update(String baseCurrencyCode, String targetCurrencyCode, BigDecimal rate) {
         ExchangeRate exchangeRate = exchangeRateDao.getExchangeRate(baseCurrencyCode, targetCurrencyCode);
         if (exchangeRate == null)
             throw new ExchangeRateNotFoundException();
 
         exchangeRateDao.update(baseCurrencyCode, targetCurrencyCode, rate);
 
-        exchangeRate.setRate(rate);
+        exchangeRate.setRate(rate.setScale(6, RoundingMode.FLOOR).stripTrailingZeros());
 
 
 //        ExchangeRateDto exchangeRateDto = new ExchangeRateDto();
@@ -128,7 +130,7 @@ public class ExchangeRatesService {
         return json;
     }
 
-    public String exchange(String baseCurrencyCode, String targetCurrencyCode, double amount) {
+    public String exchange(String baseCurrencyCode, String targetCurrencyCode, BigDecimal amount) {
         ExchangeRate exchangeRate = getRate(baseCurrencyCode, targetCurrencyCode);
 //        if (exchangeRate == null)
 //            return null;
@@ -137,8 +139,8 @@ public class ExchangeRatesService {
         exchangeResponseDto.setBaseCurrency(currencyDao.getCurrencyById(exchangeRate.getBaseCurrencyId()));
         exchangeResponseDto.setTargetCurrency(currencyDao.getCurrencyById(exchangeRate.getTargetCurrencyId()));
         exchangeResponseDto.setRate(exchangeRate.getRate());
-        exchangeResponseDto.setAmount(amount);
-        exchangeResponseDto.setConvertedAmount(exchangeRate.getRate() * amount);
+        exchangeResponseDto.setAmount(amount.setScale(2, RoundingMode.FLOOR));
+        exchangeResponseDto.setConvertedAmount(exchangeRate.getRate().multiply(amount).setScale(2, RoundingMode.FLOOR));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = "";
@@ -165,7 +167,7 @@ public class ExchangeRatesService {
 
                 exchangeRate.setBaseCurrencyId(reverseExchangeRate.getTargetCurrencyId());
                 exchangeRate.setTargetCurrencyId(reverseExchangeRate.getBaseCurrencyId());
-                exchangeRate.setRate(1/reverseExchangeRate.getRate());
+                exchangeRate.setRate(reverseExchangeRate.getRate().pow(-1));
             }
         }
 
@@ -182,7 +184,9 @@ public class ExchangeRatesService {
                 exchangeRate = new ExchangeRate();
                 exchangeRate.setBaseCurrencyId(exchangeRateUsdToBaseCurrency.getTargetCurrencyId());
                 exchangeRate.setTargetCurrencyId(exchangeRateUsdToTargetCurrency.getTargetCurrencyId());
-                exchangeRate.setRate(exchangeRateUsdToTargetCurrency.getRate()/exchangeRateUsdToBaseCurrency.getRate());
+                exchangeRate.setRate
+                        (exchangeRateUsdToTargetCurrency.getRate()
+                                .divide(exchangeRateUsdToBaseCurrency.getRate(), 6, RoundingMode.FLOOR));
             }
 
         }
@@ -202,7 +206,7 @@ public class ExchangeRatesService {
         exchangeRateDto.setId(exchangeRate.getId());
         exchangeRateDto.setBaseCurrency(currencyDao.getCurrencyById(exchangeRate.getBaseCurrencyId()));
         exchangeRateDto.setTargetCurrency(currencyDao.getCurrencyById(exchangeRate.getTargetCurrencyId()));
-        exchangeRateDto.setRate(exchangeRate.getRate());
+        exchangeRateDto.setRate(exchangeRate.getRate().stripTrailingZeros());
         return exchangeRateDto;
     }
 

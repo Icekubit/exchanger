@@ -2,11 +2,13 @@ package io.bryansk.icekubit.zhukovcurrencyexchange.dto;
 
 import io.bryansk.icekubit.zhukovcurrencyexchange.model.Currency;
 
+import java.math.BigDecimal;
+
 public class ExchangeRateDto {
     private int id;
     private Currency baseCurrency;
     private Currency targetCurrency;
-    private double rate;
+    private BigDecimal rate;
 
     public ExchangeRateDto() {
     }
@@ -35,11 +37,11 @@ public class ExchangeRateDto {
         this.targetCurrency = targetCurrency;
     }
 
-    public double getRate() {
+    public BigDecimal getRate() {
         return rate;
     }
 
-    public void setRate(double rate) {
+    public void setRate(BigDecimal rate) {
         this.rate = rate;
     }
 
