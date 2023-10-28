@@ -19,11 +19,11 @@ public class ExchangeRatesService {
 
     private static ExchangeRatesService exchangeRatesService;
     private ExchangeRateDao exchangeRateDao;
-    private CurrencyDao currencyDao;
+    private CurrenciesService currenciesService;
 
     private ExchangeRatesService(){
         exchangeRateDao = ExchangeRateDao.getExchangeRateDao();
-        currencyDao = CurrencyDao.getCurrencyDao();
+        currenciesService = CurrenciesService.getCurrenciesService();
     }
 
     public static ExchangeRatesService getExchangeRatesService() {
@@ -127,12 +127,9 @@ public class ExchangeRatesService {
 
     public ExchangeResponseDto exchange(String baseCurrencyCode, String targetCurrencyCode, BigDecimal amount) {
         ExchangeRate exchangeRate = getRate(baseCurrencyCode, targetCurrencyCode);
-//        if (exchangeRate == null)
-//            return null;
-
         ExchangeResponseDto exchangeResponseDto = new ExchangeResponseDto();
-        exchangeResponseDto.setBaseCurrency(currencyDao.getCurrencyById(exchangeRate.getBaseCurrencyId()));
-        exchangeResponseDto.setTargetCurrency(currencyDao.getCurrencyById(exchangeRate.getTargetCurrencyId()));
+        exchangeResponseDto.setBaseCurrency(currenciesService.getCurrencyById(exchangeRate.getBaseCurrencyId()));
+        exchangeResponseDto.setTargetCurrency(currenciesService.getCurrencyById(exchangeRate.getTargetCurrencyId()));
         exchangeResponseDto.setRate(exchangeRate.getRate().stripTrailingZeros());
         exchangeResponseDto.setAmount(amount.setScale(2, RoundingMode.FLOOR));
         exchangeResponseDto.setConvertedAmount(exchangeRate.getRate().multiply(amount).setScale(2, RoundingMode.FLOOR));
@@ -155,7 +152,10 @@ public class ExchangeRatesService {
 
                 exchangeRate.setBaseCurrencyId(reverseExchangeRate.getTargetCurrencyId());
                 exchangeRate.setTargetCurrencyId(reverseExchangeRate.getBaseCurrencyId());
-                exchangeRate.setRate(reverseExchangeRate.getRate().pow(-1));
+                System.out.println(reverseExchangeRate);
+                System.out.println((reverseExchangeRate.getRate()));
+                System.out.println(BigDecimal.valueOf(1.0).divide(reverseExchangeRate.getRate(), 6, RoundingMode.FLOOR));
+                exchangeRate.setRate(BigDecimal.valueOf(1.0).divide(reverseExchangeRate.getRate(), 6, RoundingMode.FLOOR));
             }
         }
 
@@ -192,8 +192,8 @@ public class ExchangeRatesService {
     private ExchangeRateDto convertToExchangeRateDto(ExchangeRate exchangeRate) {
         ExchangeRateDto exchangeRateDto = new ExchangeRateDto();
         exchangeRateDto.setId(exchangeRate.getId());
-        exchangeRateDto.setBaseCurrency(currencyDao.getCurrencyById(exchangeRate.getBaseCurrencyId()));
-        exchangeRateDto.setTargetCurrency(currencyDao.getCurrencyById(exchangeRate.getTargetCurrencyId()));
+        exchangeRateDto.setBaseCurrency(currenciesService.getCurrencyById(exchangeRate.getBaseCurrencyId()));
+        exchangeRateDto.setTargetCurrency(currenciesService.getCurrencyById(exchangeRate.getTargetCurrencyId()));
         exchangeRateDto.setRate(exchangeRate.getRate().stripTrailingZeros());
         return exchangeRateDto;
     }

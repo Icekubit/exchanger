@@ -42,6 +42,10 @@ public class CurrenciesService {
         return currencyDao.getCurrencyByCode(code);
     }
 
+    public Currency getCurrencyById(int id) {
+        return currencyDao.getCurrencyById(id);
+    }
+
     public Currency save(Currency currency) {
         currencyDao.save(currency);
 

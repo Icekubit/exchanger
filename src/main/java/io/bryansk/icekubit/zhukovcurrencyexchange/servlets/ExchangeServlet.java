@@ -35,7 +35,6 @@ public class ExchangeServlet extends BaseServlet {
         } else {
             try {
                 amount = BigDecimal.valueOf(Double.parseDouble(amountStr));
-                System.out.println(amount);
 //                String json = exchangeRatesService.exchange(baseCurrencyCode, targetCurrencyCode, amount);
                 ExchangeResponseDto exchangeResponseDto
                         = exchangeRatesService.exchange(baseCurrencyCode, targetCurrencyCode, amount);
