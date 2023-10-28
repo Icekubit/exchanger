@@ -16,28 +16,28 @@ public class ExchangeRateServlet extends BaseServlet {
 
     ExchangeRatesService exchangeRatesService = ExchangeRatesService.getExchangeRatesService();
 
-
-    // ОЧЕНЬ ХУЁВАЯ ПИРАМИДА ИЗ ИФЁЛСОВ
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
             sendError(resp,400, "Коды валют отсутствуют в адресе");
-        } else {
-            String currencyPairCodes = pathInfo.substring(1);
-            if (currencyPairCodes.length() != 6) {
-                sendError(resp, 404, "Некорректные коды валют");
-            } else {
-                String baseCurrencyCode = currencyPairCodes.substring(0, 3);
-                String targetCurrencyCode = currencyPairCodes.substring(3);
-                try {
-                    ExchangeRateDto exchangeRateDto
-                            = exchangeRatesService.getExchangeRate(baseCurrencyCode, targetCurrencyCode);
-                    sendSuccess(resp, exchangeRateDto);
-                } catch (ExchangeRateNotFoundException e) {
+            return;
+        }
+
+        String currencyPairCodes = pathInfo.substring(1);
+        if (currencyPairCodes.length() != 6) {
+            sendError(resp, 404, "Некорректные коды валют");
+            return;
+        }
+
+        String baseCurrencyCode = currencyPairCodes.substring(0, 3);
+        String targetCurrencyCode = currencyPairCodes.substring(3);
+        try {
+            ExchangeRateDto exchangeRateDto
+                    = exchangeRatesService.getExchangeRate(baseCurrencyCode, targetCurrencyCode);
+            sendSuccess(resp, exchangeRateDto);
+        } catch (ExchangeRateNotFoundException e) {
                     sendError(resp, 404, "Обменный курс для пары не найден");
-                }
-            }
         }
     }
 
@@ -70,7 +70,7 @@ public class ExchangeRateServlet extends BaseServlet {
         String baseCurrencyCode = currencyPairCodes.substring(0,3);
         String targetCurrencyCode = currencyPairCodes.substring(3);
 
-        // Теперь извлекаем rate из тела запроса говнопалочным способом
+        // Теперь извлекаем rate из тела запроса
         int positionOfRateInRequestBody = requestBody.indexOf("rate=");
         String rateString = null;
         if (positionOfRateInRequestBody != -1) {
