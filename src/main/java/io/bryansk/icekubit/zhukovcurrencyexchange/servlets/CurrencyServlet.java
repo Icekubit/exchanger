@@ -28,8 +28,7 @@ public class CurrencyServlet extends BaseServlet {
             if (optional.isEmpty()) {
                 sendError(resp, 404, "Валюта не найдена");
             } else {
-                ObjectMapper objectMapper = new ObjectMapper();
-                sendSuccess(resp, objectMapper.writeValueAsString(optional.get()));
+                sendSuccess(resp, optional.get());
             }
 //            try {
 //                String code = pathInfo.substring(1);

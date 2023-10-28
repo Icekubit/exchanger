@@ -133,7 +133,7 @@ public class ExchangeRatesService {
         ExchangeResponseDto exchangeResponseDto = new ExchangeResponseDto();
         exchangeResponseDto.setBaseCurrency(currencyDao.getCurrencyById(exchangeRate.getBaseCurrencyId()));
         exchangeResponseDto.setTargetCurrency(currencyDao.getCurrencyById(exchangeRate.getTargetCurrencyId()));
-        exchangeResponseDto.setRate(exchangeRate.getRate());
+        exchangeResponseDto.setRate(exchangeRate.getRate().stripTrailingZeros());
         exchangeResponseDto.setAmount(amount.setScale(2, RoundingMode.FLOOR));
         exchangeResponseDto.setConvertedAmount(exchangeRate.getRate().multiply(amount).setScale(2, RoundingMode.FLOOR));
 

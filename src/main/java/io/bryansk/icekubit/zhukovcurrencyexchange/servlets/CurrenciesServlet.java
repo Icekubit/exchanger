@@ -1,5 +1,6 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.servlets;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.CurrencyAlreadyExistException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.CurrencyNotFoundException;
@@ -20,8 +21,19 @@ public class CurrenciesServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String json = currenciesService.getAllCurrencies();
-        sendSuccess(resp, json);
+//        String json = currenciesService.getAllCurrencies();
+        List<Currency> listOfCurrencies = currenciesService.getAllCurrencies();
+//        resp.setContentType("application/json");
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = "";
+//        try {
+//            json = objectMapper.writeValueAsString(listOfCurrencies);
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException(e);
+//        }
+//        resp.getWriter().write(json);
+//        ObjectMapper objectMapper = new ObjectMapper();
+        sendSuccess(resp, listOfCurrencies);
     }
 
     @Override
@@ -33,8 +45,10 @@ public class CurrenciesServlet extends BaseServlet {
         if (name == null || code == null || sign == null)
             sendError(resp, 400, "Отсутствует нужное поле формы");
         else try {
-            String json = currenciesService.save(new Currency(code, name, sign));
-            sendSuccess(resp, json);
+            Currency currency = currenciesService.save(new Currency(code, name, sign));
+//            ObjectMapper objectMapper = new ObjectMapper();
+            sendSuccess(resp, currency);
+//            sendSuccess(resp, currency);
         } catch (CurrencyAlreadyExistException e) {
             sendError(resp, 409, "Валюта с таким кодом уже существует");
         }

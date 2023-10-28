@@ -26,27 +26,23 @@ public class CurrenciesService {
         return currenciesService;
     }
 
-    public Currency getCurrencyById(int id) {
-        return currencyDao.getCurrencyById(id);
-    }
-
-    public String getAllCurrencies() {
+    public List<Currency> getAllCurrencies() {
         List<Currency> listOfCurrencies = currencyDao.getAllCurrencies();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = "";
-        try {
-            json = objectMapper.writeValueAsString(listOfCurrencies);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        return json;
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = "";
+//        try {
+//            json = objectMapper.writeValueAsString(listOfCurrencies);
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException(e);
+//        }
+        return listOfCurrencies;
     }
 
     public Optional<Currency> getCurrencyByCode(String code) {
         return currencyDao.getCurrencyByCode(code);
     }
 
-    public String save(Currency currency) {
+    public Currency save(Currency currency) {
         currencyDao.save(currency);
 
 
@@ -54,14 +50,14 @@ public class CurrenciesService {
         // чтобы швырнуться нормальным джейсоном в ответ
         Currency addedCurrency = currencyDao.getCurrencyByCode(currency.getCode()).get();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = "";
-        try {
-            json = objectMapper.writeValueAsString(addedCurrency);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return json;
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = "";
+//        try {
+//            json = objectMapper.writeValueAsString(addedCurrency);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+        return addedCurrency;
 
     }
 
