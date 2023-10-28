@@ -1,16 +1,17 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.servlets;
 
+import io.bryansk.icekubit.zhukovcurrencyexchange.dto.ExchangeRateDto;
 import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.CurrencyNotFoundException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.ExchangeRateAlreadyExistException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.services.ExchangeRatesService;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 
 public class ExchangeRatesServlet extends BaseServlet {
@@ -19,9 +20,9 @@ public class ExchangeRatesServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
-        String json = exchangeRatesService.getAllExchangeRates();
+        List<ExchangeRateDto> allExchangeRates = exchangeRatesService.getAllExchangeRates();
 
-        sendSuccess(resp, json);
+        sendSuccess(resp, allExchangeRates);
     }
 
     @Override
@@ -43,8 +44,8 @@ public class ExchangeRatesServlet extends BaseServlet {
         else {
             try {
                 BigDecimal rate = BigDecimal.valueOf(Double.parseDouble(rateString));
-                String json = exchangeRatesService.save(baseCurrencyCode, targetCurrencyCode, rate);
-                sendSuccess(resp, json);
+                ExchangeRateDto exchangeRateDto = exchangeRatesService.save(baseCurrencyCode, targetCurrencyCode, rate);
+                sendSuccess(resp, exchangeRateDto);
             } catch (NumberFormatException e) {
                 sendError(resp, 422, "Неправильный формат курса валют");
             } catch (CurrencyNotFoundException e) {

@@ -1,6 +1,7 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.servlets;
 
 
+import io.bryansk.icekubit.zhukovcurrencyexchange.dto.ExchangeRateDto;
 import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.ExchangeRateNotFoundException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.services.ExchangeRatesService;
 import jakarta.servlet.ServletException;
@@ -14,6 +15,9 @@ import java.math.BigDecimal;
 public class ExchangeRateServlet extends BaseServlet {
 
     ExchangeRatesService exchangeRatesService = ExchangeRatesService.getExchangeRatesService();
+
+
+    // ОЧЕНЬ ХУЁВАЯ ПИРАМИДА ИЗ ИФЁЛСОВ
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
@@ -21,15 +25,18 @@ public class ExchangeRateServlet extends BaseServlet {
             sendError(resp,400, "Коды валют отсутствуют в адресе");
         } else {
             String currencyPairCodes = pathInfo.substring(1);
-            if (currencyPairCodes.length() != 6)
+            if (currencyPairCodes.length() != 6) {
                 sendError(resp, 404, "Некорректные коды валют");
-            String baseCurrencyCode = currencyPairCodes.substring(0,3);
-            String targetCurrencyCode = currencyPairCodes.substring(3);
-            try {
-                String json = exchangeRatesService.getExchangeRate(baseCurrencyCode, targetCurrencyCode);
-                sendSuccess(resp, json);
-            } catch (ExchangeRateNotFoundException e) {
-                sendError(resp, 404, "Обменный курс для пары не найден");
+            } else {
+                String baseCurrencyCode = currencyPairCodes.substring(0, 3);
+                String targetCurrencyCode = currencyPairCodes.substring(3);
+                try {
+                    ExchangeRateDto exchangeRateDto
+                            = exchangeRatesService.getExchangeRate(baseCurrencyCode, targetCurrencyCode);
+                    sendSuccess(resp, exchangeRateDto);
+                } catch (ExchangeRateNotFoundException e) {
+                    sendError(resp, 404, "Обменный курс для пары не найден");
+                }
             }
         }
     }
@@ -86,8 +93,10 @@ public class ExchangeRateServlet extends BaseServlet {
         else {
             try {
                 BigDecimal rate = BigDecimal.valueOf(Double.parseDouble(rateString));
-                String json = exchangeRatesService.update(baseCurrencyCode, targetCurrencyCode, rate);
-                sendSuccess(resp, json);
+//                String json = exchangeRatesService.update(baseCurrencyCode, targetCurrencyCode, rate);
+                ExchangeRateDto exchangeRateDto
+                        = exchangeRatesService.update(baseCurrencyCode, targetCurrencyCode, rate);
+                sendSuccess(resp, exchangeRateDto);
             } catch (NumberFormatException e) {
                 sendError(resp, 400, "Неправильный формат параметра rate");
             } catch (ExchangeRateNotFoundException e) {

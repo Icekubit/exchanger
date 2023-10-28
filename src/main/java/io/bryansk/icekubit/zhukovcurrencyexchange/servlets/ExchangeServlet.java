@@ -1,6 +1,7 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.servlets;
 
 
+import io.bryansk.icekubit.zhukovcurrencyexchange.dto.ExchangeResponseDto;
 import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.ExchangeRateNotFoundException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.services.ExchangeRatesService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,8 +36,10 @@ public class ExchangeServlet extends BaseServlet {
             try {
                 amount = BigDecimal.valueOf(Double.parseDouble(amountStr));
                 System.out.println(amount);
-                String json = exchangeRatesService.exchange(baseCurrencyCode, targetCurrencyCode, amount);
-                sendSuccess(resp, json);
+//                String json = exchangeRatesService.exchange(baseCurrencyCode, targetCurrencyCode, amount);
+                ExchangeResponseDto exchangeResponseDto
+                        = exchangeRatesService.exchange(baseCurrencyCode, targetCurrencyCode, amount);
+                sendSuccess(resp, exchangeResponseDto);
             } catch (NumberFormatException e) {
 
 //                resp.sendError(400, "Неправильный формат параметра amount");
