@@ -36,45 +36,14 @@ public class ExchangeRatesService {
         List<ExchangeRate> allExchangeRates = exchangeRateDao.getAllExchangeRates();
         List<ExchangeRateDto> allExchangeRatesDto = new ArrayList<>();
         for (ExchangeRate exchangeRate : allExchangeRates) {
-//            ExchangeRateDto exchangeRateDto = new ExchangeRateDto();
-//            exchangeRateDto.setId(exchangeRate.getId());
-//            exchangeRateDto.setBaseCurrency(currencyDao.getCurrencyById(exchangeRate.getBaseCurrencyId()));
-//            exchangeRateDto.setTargetCurrency(currencyDao.getCurrencyById(exchangeRate.getTargetCurrencyId()));
-//            exchangeRateDto.setRate(exchangeRate.getRate());
-//            allExchangeRatesDto.add(exchangeRateDto);
             allExchangeRatesDto.add(convertToExchangeRateDto(exchangeRate));
         }
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = "";
-//
-//        try {
-//            json = objectMapper.writeValueAsString(allExchangeRatesDto);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
         return allExchangeRatesDto;
     }
 
-//    public boolean isExchangeRateExist(String baseCurrencyCode, String targetCurrencyCode) {
-//        return exchangeRateDao.isExchangeRateExist(baseCurrencyCode, targetCurrencyCode);
-//    }
-
 
     public ExchangeRateDto save(String baseCurrencyCode, String targetCurrencyCode, BigDecimal rate) {
-//        ExchangeRate exchangeRate = new ExchangeRate();
-//        exchangeRate.setBaseCurrencyId(currencyDao.getCurrencyByCode(baseCurrencyCode).get().getId());
-//        exchangeRate.setTargetCurrencyId(currencyDao.getCurrencyByCode(targetCurrencyCode).get().getId());
-//        exchangeRate.setRate(rate);
-//        exchangeRateDao.save(exchangeRate);
         ExchangeRate exchangeRate = exchangeRateDao.save(baseCurrencyCode, targetCurrencyCode, rate);
-
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = "";
-//        try {
-//            json = objectMapper.writeValueAsString(convertToExchangeRateDto(exchangeRate));
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
         return convertToExchangeRateDto(exchangeRate);
     }
 
@@ -82,20 +51,6 @@ public class ExchangeRatesService {
         ExchangeRate exchangeRate = exchangeRateDao.getExchangeRate(baseCurrencyCode, targetCurrencyCode);
         if (exchangeRate == null)
             throw new ExchangeRateNotFoundException();
-
-//        ExchangeRateDto exchangeRateDto = new ExchangeRateDto();
-//        exchangeRateDto.setId(exchangeRate.getId());
-//        exchangeRateDto.setBaseCurrency(currencyDao.getCurrencyById(exchangeRate.getBaseCurrencyId()));
-//        exchangeRateDto.setTargetCurrency(currencyDao.getCurrencyById(exchangeRate.getTargetCurrencyId()));
-//        exchangeRateDto.setRate(exchangeRate.getRate());
-
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = "";
-//        try {
-//            json = objectMapper.writeValueAsString(convertToExchangeRateDto(exchangeRate));
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
         return convertToExchangeRateDto(exchangeRate);
     }
 
@@ -107,21 +62,6 @@ public class ExchangeRatesService {
         exchangeRateDao.update(baseCurrencyCode, targetCurrencyCode, rate);
 
         exchangeRate.setRate(rate.setScale(6, RoundingMode.FLOOR).stripTrailingZeros());
-
-
-//        ExchangeRateDto exchangeRateDto = new ExchangeRateDto();
-//        exchangeRateDto.setId(exchangeRate.getId());
-//        exchangeRateDto.setBaseCurrency(currencyDao.getCurrencyById(exchangeRate.getBaseCurrencyId()));
-//        exchangeRateDto.setTargetCurrency(currencyDao.getCurrencyById(exchangeRate.getTargetCurrencyId()));
-//        exchangeRateDto.setRate(exchangeRate.getRate());
-
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = "";
-//        try {
-//            json = objectMapper.writeValueAsString(convertToExchangeRateDto(exchangeRate));
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
         return convertToExchangeRateDto(exchangeRate);
     }
 

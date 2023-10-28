@@ -1,7 +1,5 @@
 package io.bryansk.icekubit.zhukovcurrencyexchange.servlets;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.bryansk.icekubit.zhukovcurrencyexchange.exceptions.CurrencyNotFoundException;
 import io.bryansk.icekubit.zhukovcurrencyexchange.model.Currency;
 import io.bryansk.icekubit.zhukovcurrencyexchange.services.CurrenciesService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-// ПЕРЕДЕЛАТЬ ДУГЕТ ИСПОЛЬЗУЮЩИЙ ОБЖЕКТМАППЕР
+
 
 public class CurrencyServlet extends BaseServlet {
 
@@ -30,13 +28,6 @@ public class CurrencyServlet extends BaseServlet {
             } else {
                 sendSuccess(resp, optional.get());
             }
-//            try {
-//                String code = pathInfo.substring(1);
-//                String json = currenciesService.getCurrencyByCode(code);
-//                sendSuccess(resp, json);
-//            } catch (CurrencyNotFoundException e) {
-//                sendError(resp, 404, "Валюта не найдена");
-//            }
         }
 
     }

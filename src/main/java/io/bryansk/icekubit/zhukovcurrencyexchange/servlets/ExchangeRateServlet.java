@@ -83,17 +83,9 @@ public class ExchangeRateServlet extends BaseServlet {
 
         if (rateString == null)
             sendError(resp,400, "Отсутствует нужное поле формы");
-//        else if (exchangeRatesService.getExchangeRate(baseCurrencyCode, targetCurrencyCode) == null)
-//            sendError(resp,404, "Валютная пара отсутствует в базе данных");
-//        else {
-//            double rate = Double.parseDouble(rateString);
-//            String json = exchangeRatesService.update(baseCurrencyCode, targetCurrencyCode, rate);
-//            sendSuccess(resp, json);
-//        }
         else {
             try {
                 BigDecimal rate = BigDecimal.valueOf(Double.parseDouble(rateString));
-//                String json = exchangeRatesService.update(baseCurrencyCode, targetCurrencyCode, rate);
                 ExchangeRateDto exchangeRateDto
                         = exchangeRatesService.update(baseCurrencyCode, targetCurrencyCode, rate);
                 sendSuccess(resp, exchangeRateDto);

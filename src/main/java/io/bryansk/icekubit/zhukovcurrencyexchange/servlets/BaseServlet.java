@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 
 public abstract class BaseServlet extends HttpServlet {
     protected void sendError(HttpServletResponse resp, int status, String message) throws IOException {
@@ -25,63 +24,6 @@ public abstract class BaseServlet extends HttpServlet {
         String json = objectMapper.writeValueAsString(obj);
         resp.getWriter().write(json);
     }
-
-//    protected void sendSuccess(HttpServletResponse resp, String json) throws IOException {
-//        resp.setContentType("application/json");
-//        resp.getWriter().write(json);
-//    }
-//
-//    protected void sendSuccess(HttpServletResponse resp, ExchangeRateDto exchangeRateDto) throws IOException {
-//        resp.setContentType("application/json");
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = "";
-//        try {
-//            json = objectMapper.writeValueAsString(exchangeRateDto);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        resp.getWriter().write(json);
-//    }
-//
-//    protected void sendSuccess(HttpServletResponse resp, ExchangeResponseDto exchangeResponseDto) throws IOException {
-//        resp.setContentType("application/json");
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = "";
-//        try {
-//            json = objectMapper.writeValueAsString(exchangeResponseDto);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        resp.getWriter().write(json);
-//    }
-//
-//    protected void sendSuccess(HttpServletResponse resp, List<ExchangeRateDto> allExchangeRatesDto) throws IOException {
-//        resp.setContentType("application/json");
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = "";
-//        try {
-//            json = objectMapper.writeValueAsString(allExchangeRatesDto);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        resp.getWriter().write(json);
-//    }
-//
-//    protected void sendSuccess(HttpServletResponse resp, Currency currency) throws IOException {
-//        resp.setContentType("application/json");
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = "";
-//        try {
-//            json = objectMapper.writeValueAsString(currency);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        resp.getWriter().write(json);
-//    }
-//
-
-
-
 
     protected String getErrorJson(String message) {
         return "{\"message\": \"" + message + "\"}";

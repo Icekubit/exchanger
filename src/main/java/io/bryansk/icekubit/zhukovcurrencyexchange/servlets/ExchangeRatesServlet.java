@@ -34,13 +34,8 @@ public class ExchangeRatesServlet extends BaseServlet {
 
 
         if (baseCurrencyCode == null || targetCurrencyCode == null || rateString == null) {
-//            resp.setContentType("text/plain");
-//            resp.setStatus(400);
-//            resp.getWriter().write("Отсутствует нужное поле формы");
             sendError(resp,400, "Отсутствует нужное поле формы");
         }
-//        else if (exchangeRatesService.isExchangeRateExist(baseCurrencyCode, targetCurrencyCode))
-//            sendError(resp,409, "Валютная пара с таким кодом уже существует");
         else {
             try {
                 BigDecimal rate = BigDecimal.valueOf(Double.parseDouble(rateString));

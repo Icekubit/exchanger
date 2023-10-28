@@ -28,13 +28,6 @@ public class CurrenciesService {
 
     public List<Currency> getAllCurrencies() {
         List<Currency> listOfCurrencies = currencyDao.getAllCurrencies();
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = "";
-//        try {
-//            json = objectMapper.writeValueAsString(listOfCurrencies);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
         return listOfCurrencies;
     }
 
@@ -48,19 +41,7 @@ public class CurrenciesService {
 
     public Currency save(Currency currency) {
         currencyDao.save(currency);
-
-
-        // вытаскиваем из бд только, что сохранённую валюту, потому как нам нужно знать её айдишник
-        // чтобы швырнуться нормальным джейсоном в ответ
         Currency addedCurrency = currencyDao.getCurrencyByCode(currency.getCode()).get();
-
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = "";
-//        try {
-//            json = objectMapper.writeValueAsString(addedCurrency);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
         return addedCurrency;
 
     }
